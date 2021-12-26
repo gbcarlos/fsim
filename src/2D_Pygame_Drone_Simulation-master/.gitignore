@@ -1,0 +1,5 @@
+/.idea
+/Resources
+/FST_venv
+*__pycache__/
+/tools/DataVisualization.py
