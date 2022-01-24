@@ -221,8 +221,7 @@ def start_the_game():
     game_loop()
     pass
 #menu loop
-menu = pygame_menu.Menu(300, 400, 'Welcome',
-                       theme=pygame_menu.themes.THEME_BLUE)
+menu = pygame_menu.Menu(300, 400, 'Welcome', theme=pygame_menu.themes.THEME_BLUE)
 
 menu.add_text_input('Name :', default='John Doe')
 menu.add_selector('Difficulty :', [('Airbus A300', 1), ('Concorde', 2)], onchange=choose_aircraft)

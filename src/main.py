@@ -1,51 +1,92 @@
 import pygame
+import math
+import numpy as np
 
-if __name__ == 'main':
-    # Define some colors
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    GREEN = (0, 255, 0)
-    RED = (255, 0, 0)
+pygame.init()
 
-    pygame.init()
+win_size = (500,480)
+win = pygame.display.set_mode(win_size)
 
-    # Set the width and height of the screen [width, height]
-    size = (700, 500)
-    screen = pygame.display.set_mode(size)
+pygame.display.set_caption("First Game")
+bg = pygame.image.load('bg.jpg')
+char = pygame.image.load('standing.png')
 
-    pygame.display.set_caption("My Game")
+clock = pygame.time.Clock()
 
-    # Loop until the user clicks the close button.
-    done = False
+#SETUP
+g = 9.881 #meters per square seconds
+x0 = 20 #meters
+y0 = 80 #meters
+v0 = 8 #meters per second
+alpha = 45 #degrees
 
-    # Used to manage how fast the screen updates
-    clock = pygame.time.Clock()
+py_origin = coord_trafo_pygame([x0,y0], win_size[1])
+                
+class projectile(object):
+    def __init__(self,coords,radius,color,vel=0):
+        self.origin = coords
+        self.x = coords[0]
+        self.y = coords[1]
+        self.radius = radius
+        self.color = color
+        self.vel = vel
 
-    # -------- Main Program Loop -----------
-    while not done:
-        # --- Main event loop
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
+    def draw(self,win):
+        pygame.draw.circle(win, self.color, (self.x,self.y), self.radius)
+        
+    def respawn(self):
+        self.x = self.origin[0]
+        self.y = self.origin[1]
 
-        # --- Game logic should go here
+def parabelBahn(t):
+    coords = np.array((2,1))
+    coords[0] = v0 * math.cos(alpha) * t + x0
+    coords[1] = v0 * math.sin(alpha) * t + y0 - 0.5 * g * np.square(t)
+    return coords
 
-        # --- Screen-clearing code goes here
+def coord_trafo_pygame(coords, height):
+    """Convert coordinates into pygame coordinates (lower-left => top left).
+    Input: coords = [x,y], height = height of window"""
+    return (coords[0], height - coords[1])
 
-        # Here, we clear the screen to white. Don't put other drawing commands
-        # above this, or they will be erased with this command.
+def redrawGameWindow():
+    win.blit(bg, (0,0))
+    bullets.draw(win)
+    pygame.display.update()
 
-        # If you want a background image, replace this clear with blit'ing the
-        # background image.
-        screen.fill(WHITE)
 
-        # --- Drawing code should go here
+#mainloop
+bullets = projectile(py_origin, 6, (0,0,0))
+start_time = 0
+run = True
+while run:
+    clock.tick(160)
 
-        # --- Go ahead and update the screen with what we've drawn.
-        pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+            
+    keys = pygame.key.get_pressed()
 
-        # --- Limit to 60 frames per second
-        clock.tick(60)
+    if keys[pygame.K_SPACE]:
+        start_time = pygame.time.get_ticks()
+        bullets.respawn()
+        bullets.vel = 8
+    
+    if bullets.x < win_size[0] and bullets.y < win_size[1]:
+        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000 #in seconds
+        coords = parabelBahn(elapsed_time)
+        coords_py = coord_trafo_pygame(coords, win_size[1])
+        bullets.x = coords_py[0]
+        bullets.y = coords_py[1]
+    
+    redrawGameWindow()
 
-    # Close the window and quit.
-    pygame.quit()
+pygame.quit()
+
+
+
+
+
+
+
