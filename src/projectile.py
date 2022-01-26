@@ -7,11 +7,11 @@ Created on Mon Jan 24 15:28:18 2022
 import pygame
 
 class projectile(object):
-    def __init__(self,coords,radius,color,vel=0, mv=False):
+    def __init__(self,coords,color,vel=0, mv=False):
         self.origin = coords
         self.x = coords[0]
         self.y = coords[1]
-        self.radius = radius
+        self.radius = 8
         self.color = color
         self.vel = vel
         self.move = mv
