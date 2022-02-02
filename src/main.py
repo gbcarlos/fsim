@@ -5,29 +5,19 @@ Cannonball Simulation
 import pygame
 from functions import parabelBahn, coord_trafo_pygame
 from projectile import projectile
-from menu import numerical_alg, start_the_game
 from env import Environment
+from TextInput import TextInput
 
 '''
-#MAIN MENU
-menu = pygame_menu.Menu('Welcome', 500, 400,
-                       theme=pygame_menu.themes.THEME_BLUE)
-
-menu.add.text_input('Name :', default='ol Doe')
-menu.add.button('Change initial Parameters', start_the_game())
 menu.add.selector('Num. Algorithm :', [('Euler', 1), ('Trapez', 2), ('Anderes', 3)], onchange=numerical_alg())
-menu.add.button('Simulate', start_the_game())
-menu.add.button('Quit', pygame_menu.events.EXIT)
-
-menu.mainloop(win)
 '''
+
 #SETUP SIMULATION
 g = 9.881 #meters per square seconds
 x0 = 20 #meters
 y0 = 80 #meters
 v0 = 60 #meters per second
 alpha = 45 #degrees
-
 
 env = Environment()
 py_origin = coord_trafo_pygame([x0,y0], env.win_size[1])
@@ -41,6 +31,11 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        env.ti_gravity.check_userInput(event)
+        env.ti_x0.check_userInput(event)
+        env.ti_y0.check_userInput(event) 
+        env.ti_v0.check_userInput(event) 
+        env.ti_alpha.check_userInput(event) 
             
     keys = pygame.key.get_pressed()
     
@@ -57,11 +52,20 @@ while run:
         cball.x = coords_py[0]
         cball.y = coords_py[1]
     
-    # Draw cannonball position on sim_screen and blit sim_screen on main_screen
-
+    # Draw cannonball position on sim_screen
     env.sim_screen.blit(env.bg, (0, 0))
     cball.draw(env.sim_screen)
+    
+    # Draw Menu UI
+    env.ti_gravity.draw(env.menu_screen)
+    env.ti_x0.draw(env.menu_screen)
+    env.ti_y0.draw(env.menu_screen)
+    env.ti_v0.draw(env.menu_screen)
+    env.ti_alpha.draw(env.menu_screen)
+    
+    # Update main_screen
     env.main_screen.blit(env.sim_screen, (env.menu_width, 0))
+    env.main_screen.blit(env.menu_screen, (0, 0))
     
     pygame.display.update()
 

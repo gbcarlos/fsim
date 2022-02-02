@@ -70,7 +70,7 @@ class Environment:
     def draw_environment(self):
         self.screen.fill(self.WHITE)
         self.create_game_menu()
-        #self.draw_pause()
+        self.draw_pause()
 
     def create_game_menu(self):
         # Add one more surface background for the buttons and the displays later
@@ -80,7 +80,10 @@ class Environment:
         panel_surf.fill(self.GRAY)  # this fills the entire surface
         self.screen.blit(panel_surf, (self.PLAYGROUND_WIDTH, 0))  # (0,0) are the top-left coordinates
         # panel bar description
-        self.display_text("Game Menu",(self.MENU_MID_COORD, 50),fontsize=30, under_line=True)
+        self.display_text("Game Menu",
+                          (self.MENU_MID_COORD, 50),
+                          fontsize=30,
+                          under_line=True)
         # Draw buttons!
         self.editor_button.draw()
         self.fly_button.draw()
