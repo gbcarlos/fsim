@@ -16,10 +16,9 @@ def parabelBahn(t, v0, g, alpha, x0, y0):
 
 def coord_trafo_pygame(coords, height):
     """Convert coordinates into pygame coordinates (lower-left => top left).
-    Input: coords = [x,y], height = height of window"""
+    Input: 
+        coords = [x,y],
+        width = width of the menu (0,0 starts in simulation window),
+        height = height of window (will be reversed)
+    """
     return (coords[0], height - coords[1])
-
-def redrawGameWindow(win, bg, bullets):
-    win.blit(bg, (0,0))
-    bullets.draw(win)
-    pygame.display.update()
