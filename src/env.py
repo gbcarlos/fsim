@@ -36,11 +36,11 @@ class Environment:
         
         # MENU DESIGN
         self.display_text("Simulation Parameters",(self.menu_width / 2, 50), fontsize=20, under_line=True, bold=True)
-        self.ti_gravity = TextInput(self.menu_width, "9.881")
-        self.ti_x0 = TextInput(self.menu_width, "20")
-        self.ti_y0 = TextInput(self.menu_width, "80")
-        self.ti_v0 = TextInput(self.menu_width, "60")
-        self.ti_alpha = TextInput(self.menu_width, "45")
+        self.ti_gravity = TextInput(self.menu_width, "9.881", label="g", unit="[m/s^2]")
+        self.ti_x0 = TextInput(self.menu_width, "20", label="x0", unit="[m]")
+        self.ti_y0 = TextInput(self.menu_width, "80", label="y0", unit="[m]")
+        self.ti_v0 = TextInput(self.menu_width, "60", label="v0", unit="[m/s]")
+        self.ti_alpha = TextInput(self.menu_width, "45", label="Alpha", unit="[deg]")
         
         
         # SIMULATION SCREEN
@@ -60,7 +60,7 @@ class Environment:
         
         
     def display_text(self, text: str, pos, fontsize: int = 16, align: str = 'center', under_line=False, bold=False) -> None:
-        """
+        '''
         Function to create text with coordinates given in center!
 
         :param align: left or center alignment
@@ -68,7 +68,7 @@ class Environment:
         :param pos: center or left position of text
         :param fontsize: fontsize number (only change of necessary, causes too much lag otherwise)
         :param under_line: Decide if text should be underlined
-        """
+        '''
     
         my_font = pygame.font.SysFont('Arial', fontsize, bold=bold)
         

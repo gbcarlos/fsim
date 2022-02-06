@@ -12,6 +12,8 @@ from TextInput import TextInput
 menu.add.selector('Num. Algorithm :', [('Euler', 1), ('Trapez', 2), ('Anderes', 3)], onchange=numerical_alg())
 '''
 
+BLACK = (0,0,0)
+
 #SETUP SIMULATION
 g = 9.881 #meters per square seconds
 x0 = 20 #meters
@@ -21,7 +23,7 @@ alpha = 45 #degrees
 
 env = Environment()
 py_origin = coord_trafo_pygame([x0,y0], env.win_size[1])
-cball = projectile(py_origin, (0,0,0))
+cball = projectile(py_origin, BLACK)
 start_time = 0
 run = True
 
