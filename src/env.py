@@ -37,14 +37,14 @@ class Environment:
         
         # MENU DESIGN
         self.display_text("Simulation Parameters",(self.menu_width / 2, 50), fontsize=20, under_line=True, bold=True)
-        self.ti_gravity = TextInput(self.menu_width, "9.881", label="g", unit="[m/s^2]")
+        self.ti_gravity = TextInput(self.menu_width, "9.81", label="g", unit="[m/s^2]")
         self.ti_x0 = TextInput(self.menu_width, "20", label="x0", unit="[m]")
         self.ti_y0 = TextInput(self.menu_width, "80", label="y0", unit="[m]")
         self.ti_v0 = TextInput(self.menu_width, "60", label="v0", unit="[m/s]")
         self.ti_alpha = TextInput(self.menu_width, "45", label="Alpha", unit="[deg]")
 
         self.algorithm_list = ["None", "Euler", "Trapez"]
-        self.algorithm_dropdown = DropDown(self.menu_width/2 - 30, self.win_size[1]*2/3, 60, 30, self.algorithm_list)
+        self.algorithm_dropdown = DropDown(self.menu_width*2/3, self.win_size[1]*2/3, 60, 30, self.algorithm_list, label="Numerical Algorithm:")
         self.sim_button = pygbutton.PygButton((self.menu_width/2 - 25, self.win_size[1] - 50, 50, 30), 'START', GREEN)
         
         # SIMULATION SCREEN

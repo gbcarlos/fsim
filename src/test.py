@@ -17,9 +17,9 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    selected_option = list1.update(event_list)
-    if selected_option >= 0:
-        print(selected_option)
+        selected_option = list1.update(event)
+        if selected_option >= 0:
+            print(selected_option)
 
     window.fill((255, 255, 255))
     list1.draw(window)

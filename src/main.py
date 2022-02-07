@@ -26,8 +26,9 @@ run = True
 # MAIN LOOP
 while run:
     env.clock.tick(220)
-    
-    for event in pygame.event.get():
+
+    event_list = pygame.event.get()
+    for event in event_list:
         if event.type == pygame.QUIT:
             run = False
         
@@ -36,9 +37,9 @@ while run:
         env.check4userUpdates(event)
 
         # Read out DropDown selection
-        selected_alg = env.algorithm_dropdown.update(pygame.event.get())
-        if selected_alg >= 0:
-            print(selected_alg)
+        sel_algorithm = env.algorithm_dropdown.update(event)
+        if sel_algorithm >= 0:
+            print(sel_algorithm)
 
         # Check if simulation button has been pressed
         env.sim_button.handleEvent(event)
@@ -53,11 +54,11 @@ while run:
             sim.v0 = float(env.ti_v0.user_text)
             sim.alpha = float(env.ti_alpha.user_text)
 
-            # Starting the simulation
+            # Start the simulation
             sim.start_time = pygame.time.get_ticks() / 1000 # in sec
             cball.respawn()
             cball.move = True
-    
+
     # Executed when simulation is still running and ball is not outside window    
     if cball.x < env.win_size[0] and cball.y < env.win_size[1] and cball.move:
         # Update Step time & position of cannonball using numerical algorithm
@@ -84,7 +85,7 @@ while run:
 
     # Update text fields with user inputs on menu_screen
     env.update_Menu()
-    
+
     # Update main_screen
     env.main_screen.blit(env.sim_screen, (env.menu_width, 0))
     env.main_screen.blit(env.menu_screen, (0, 0))
