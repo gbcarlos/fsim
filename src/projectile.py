@@ -13,7 +13,7 @@ class projectile(object):
         self.y = coords[1]
         self.radius = 8
         self.color = color
-        self.vel = vel
+        self.vel = vel # Hierüber evtl steuern wie schnell sich der ball bewegt
         self.move = mv
 
     def draw(self,win):

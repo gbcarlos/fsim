@@ -1,12 +1,13 @@
 '''
-Cannonball Simulation
+Cannonball Simulation by Carlos
 '''
-#Imports
+# IMPORTS
 import pygame
 from functions import parabelBahn, coord_trafo_pygame
 from projectile import projectile
 from env import Environment
 from TextInput import TextInput
+from sim import Simulation
 
 '''
 menu.add.selector('Num. Algorithm :', [('Euler', 1), ('Trapez', 2), ('Anderes', 3)], onchange=numerical_alg())
@@ -14,56 +15,75 @@ menu.add.selector('Num. Algorithm :', [('Euler', 1), ('Trapez', 2), ('Anderes', 
 
 BLACK = (0,0,0)
 
-#SETUP SIMULATION
-g = 9.881 #meters per square seconds
-x0 = 20 #meters
-y0 = 80 #meters
-v0 = 60 #meters per second
-alpha = 45 #degrees
-
+# INITIALISATION
 env = Environment()
-py_origin = coord_trafo_pygame([x0,y0], env.win_size[1])
-cball = projectile(py_origin, BLACK)
-start_time = 0
+sim = Simulation(env.win_size)
+
+sim_origin = sim.getOrigin()
+cball = projectile(sim_origin, BLACK)
 run = True
 
+# MAIN LOOP
 while run:
     env.clock.tick(220)
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        env.ti_gravity.check_userInput(event)
-        env.ti_x0.check_userInput(event)
-        env.ti_y0.check_userInput(event) 
-        env.ti_v0.check_userInput(event) 
-        env.ti_alpha.check_userInput(event) 
-            
-    keys = pygame.key.get_pressed()
-    
-    if keys[pygame.K_SPACE]:
-        start_time = pygame.time.get_ticks()
-        cball.respawn()
-        cball.move = True
-        cball.vel = 8
         
-    if cball.x < env.win_size[0] and cball.y < env.win_size[1] and cball.move:
-        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000 #in seconds
-        coords = parabelBahn(elapsed_time, v0, g, alpha, x0, y0)
-        coords_py = coord_trafo_pygame(coords, env.win_size[1])
-        cball.x = coords_py[0]
-        cball.y = coords_py[1]
+        ''' Check for menu updates in user inputs (Pre-Simulation Configuration)
+        This is just for graphical updates'''
+        env.check4userUpdates(event)
+
+        # Read out DropDown selection
+        selected_alg = env.algorithm_dropdown.update(pygame.event.get())
+        if selected_alg >= 0:
+            print(selected_alg)
+
+        # Check if simulation button has been pressed
+        env.sim_button.handleEvent(event)
+
+        # If pressed, setup and start simulation
+        if env.sim_button.buttonDown:
+
+            # Update Sim Parameters with user input
+            sim.gravity = float(env.ti_gravity.user_text)
+            sim.x0 = float(env.ti_x0.user_text)
+            sim.y0 = float(env.ti_y0.user_text)
+            sim.v0 = float(env.ti_v0.user_text)
+            sim.alpha = float(env.ti_alpha.user_text)
+
+            # Starting the simulation
+            sim.start_time = pygame.time.get_ticks() / 1000 # in sec
+            cball.respawn()
+            cball.move = True
     
-    # Draw cannonball position on sim_screen
+    # Executed when simulation is still running and ball is not outside window    
+    if cball.x < env.win_size[0] and cball.y < env.win_size[1] and cball.move:
+        # Update Step time & position of cannonball using numerical algorithm
+        sim.update_simTime(pygame.time.get_ticks())
+        sim.update_pos()
+        
+        # Assign new position to cannonball
+        cball.x = sim.pos[0] 
+        cball.y = sim.pos[1] 
+    
+    ### SCREEN UPDATES ###
+    
+    # Update cannonball position on sim_screen and show simtime on sim_screen
     env.sim_screen.blit(env.bg, (0, 0))
     cball.draw(env.sim_screen)
-    
-    # Draw Menu UI
-    env.ti_gravity.draw(env.menu_screen)
-    env.ti_x0.draw(env.menu_screen)
-    env.ti_y0.draw(env.menu_screen)
-    env.ti_v0.draw(env.menu_screen)
-    env.ti_alpha.draw(env.menu_screen)
+
+    print(sim.elapsed_time % 1000)
+    font = pygame.font.Font(None, 25)
+    min = sim.elapsed_time/1000 // 60
+    sec = sim.elapsed_time/1000 % 60
+    output_string = "Time: {0:02}".format(sim.elapsed_time % 1000)
+    text_time = font.render(output_string, True, BLACK)
+    env.sim_screen.blit(text_time, [40, 40])
+
+    # Update text fields with user inputs on menu_screen
+    env.update_Menu()
     
     # Update main_screen
     env.main_screen.blit(env.sim_screen, (env.menu_width, 0))

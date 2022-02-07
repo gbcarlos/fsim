@@ -6,12 +6,14 @@ Created on Tue Feb  1 15:35:16 2022
 """
 
 import pygame
-from button import Button
+import pygbutton
 from TextInput import TextInput
+from DropDown import DropDown
 
 # COLORS
 BEIGE = (249,228,183)
 BLACK = (0,0,0)
+GREEN = (0, 255, 0)
 
 # Settings for environment:
 METER_TO_PIXEL = 100  # Factor to scale playground between pixel and meters (default drone size is ~0.3m)
@@ -25,12 +27,11 @@ class Environment:
         
         # MAIN SCREEN
         pygame.display.set_caption("Cannonball Simulation")
-        self.win_size = (1100,480)
+        self.win_size = (1100, 480)
         self.main_screen = pygame.display.set_mode(self.win_size) # SURFACE main_screen = menu + sim
         
         # MENU SCREEN
         self.menu_width = 300
-        self.menu_coord = self.menu_width / 2
         self.menu_screen = pygame.Surface((self.menu_width, self.win_size[1]))
         self.menu_screen.fill(BEIGE)
         
@@ -41,7 +42,10 @@ class Environment:
         self.ti_y0 = TextInput(self.menu_width, "80", label="y0", unit="[m]")
         self.ti_v0 = TextInput(self.menu_width, "60", label="v0", unit="[m/s]")
         self.ti_alpha = TextInput(self.menu_width, "45", label="Alpha", unit="[deg]")
-        
+
+        self.algorithm_list = ["None", "Euler", "Trapez"]
+        self.algorithm_dropdown = DropDown(self.menu_width/2 - 30, self.win_size[1]*2/3, 60, 30, self.algorithm_list)
+        self.sim_button = pygbutton.PygButton((self.menu_width/2 - 25, self.win_size[1] - 50, 50, 30), 'START', GREEN)
         
         # SIMULATION SCREEN
         self.sim_screen_width = self.win_size[0] - self.menu_width
@@ -58,8 +62,26 @@ class Environment:
         self.main_screen.blit(self.menu_screen, (0,0))
         self.main_screen.blit(self.sim_screen, (self.menu_width, 0))
         
+    def check4userUpdates(self, event):
+        # Checks if changes in text fields have been done by user
         
-    def display_text(self, text: str, pos, fontsize: int = 16, align: str = 'center', under_line=False, bold=False) -> None:
+        self.ti_gravity.check_userInput(event)
+        self.ti_x0.check_userInput(event)
+        self.ti_y0.check_userInput(event) 
+        self.ti_v0.check_userInput(event) 
+        self.ti_alpha.check_userInput(event)
+        
+    def update_Menu(self):
+        # Draw Menu UI (used for updating menu with user inputs)
+        self.ti_gravity.draw(self.menu_screen)
+        self.ti_x0.draw(self.menu_screen)
+        self.ti_y0.draw(self.menu_screen)
+        self.ti_v0.draw(self.menu_screen)
+        self.ti_alpha.draw(self.menu_screen)
+        self.algorithm_dropdown.draw(self.menu_screen)
+        self.sim_button.draw(self.menu_screen)
+        
+    def display_text(self, text: str, pos, fontsize: int = 16, align: str = 'center', under_line=False, bold=False):
         '''
         Function to create text with coordinates given in center!
 

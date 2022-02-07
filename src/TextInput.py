@@ -11,7 +11,7 @@ BLACK = (0, 0, 0)
 
 class TextInput:
     
-    _threshold = 70 #static variable
+    _threshold = 70 #static variable for handling of multiple text inputs in one menu
     
     def __init__(self, menu_width, text='', label='', unit=''):
         pygame.font.init()
@@ -58,12 +58,18 @@ class TextInput:
             if event.key == pygame.K_BACKSPACE and self.active:
 
                 # deletes last letter/number
-                self.user_text = self.user_text[:-1]
-
-            elif self.active:
+                if len(self.user_text) > 1:
+                    self.user_text = self.user_text[:-1]
+                else:
+                    self.user_text = u"0"
+                    
+            elif self.active and event.key != pygame.K_SPACE and event.key != pygame.K_RETURN and event.key != pygame.K_TAB:
                 # adds sign from event
                 self.user_text += event.unicode
-        
+                
+                if self.user_text[0] == "0":
+                    self.user_text = self.user_text[1:]
+
     def draw(self, win):
         # Draws input rectangle on menu and text into 
         pygame.draw.rect(win, self.color, self.input_rect)
