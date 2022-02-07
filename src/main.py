@@ -74,11 +74,11 @@ while run:
     env.sim_screen.blit(env.bg, (0, 0))
     cball.draw(env.sim_screen)
 
-    print(sim.elapsed_time % 1000)
+    # Print out simulation uptime on sim screen
     font = pygame.font.Font(None, 25)
-    min = sim.elapsed_time/1000 // 60
-    sec = sim.elapsed_time/1000 % 60
-    output_string = "Time: {0:02}".format(sim.elapsed_time % 1000)
+    min = int(sim.elapsed_time // 60)
+    sec = int(sim.elapsed_time % 60)
+    output_string = "Time: {0:02}:{1:02}".format(min, sec)
     text_time = font.render(output_string, True, BLACK)
     env.sim_screen.blit(text_time, [40, 40])
 
